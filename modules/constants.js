@@ -1,5 +1,10 @@
+export const DEGREE = Math.PI/180
+export const FRICTION = 0.7
 export const FPS = 30
+export const ROID_JAG = 0.44
+export const ROID_START_SIZE = 100
+export const ROID_START_SPEED = 50
+export const ROID_STARTING_NUM = 6
+export const ROID_VERTEX = 10
 export const SHIP_THRUST = 5
 export const TURN_SPEED = 180
-export const FRICTION = 0.7
-export const DEGREE = Math.PI/180
