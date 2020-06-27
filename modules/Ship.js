@@ -94,10 +94,7 @@ export default class Ship {
       this.y - this.r * Math.sin(this.a),
     )
     // ship centroid
-    this.ctx.lineTo(
-      this.x - this.r * (0/3 * Math.cos(this.a)),
-      this.y + this.r * (0/3 * Math.sin(this.a)),
-    )
+    this.ctx.lineTo(this.x, this.y)
     this.ctx.stroke()
   }
 
