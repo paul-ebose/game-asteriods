@@ -5,7 +5,7 @@ import {
   ROID_START_SIZE,
   ROID_START_SPEED,
   ROID_VERTICES,
-  SHOW_COLLISION_BOUND
+  SHOW_COLLISION_BOUND,
 } from './constants.js'
 
 export default class Asteroid {

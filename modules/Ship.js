@@ -2,10 +2,13 @@ import {
   DEGREE,
   FPS,
   FRICTION,
+  LASER_MAX,
+  LASER_SPEED,
+  MAX_TRAVEL_DISTANCE,
   SHIP_BLINK_DURATION,
   SHIP_EXPLODE_DURATION,
   SHIP_INVISIBILTY_DURATION,
-  SHOW_COLLISION_BOUND
+  SHOW_COLLISION_BOUND,
 } from './constants.js'
 
 export default class Ship {
@@ -17,6 +20,8 @@ export default class Ship {
     this.r = size/2
     this.a = 90 * DEGREE
     this.rotation = 0
+    this.canShoot = true
+    this.lasers = []
     this.blinkNumber= Math.ceil(SHIP_INVISIBILTY_DURATION / SHIP_BLINK_DURATION)
     this.blinkTime = Math.ceil(SHIP_BLINK_DURATION * FPS)
     this.blinkIsOn = this.blinkNumber % 2 === 0
@@ -58,6 +63,13 @@ export default class Ship {
       this.ctx.arc(this.x, this.y, this.r, 0, 360 * DEGREE)
       this.ctx.stroke()
     }
+    // draw lasers is any
+    for (const laser of this.lasers) {
+      this.ctx.fillStyle = 'salmon'
+      this.ctx.beginPath()
+      this.ctx.arc(laser.x, laser.y, this.size/15, 0, 360 * DEGREE)
+      this.ctx.fill()
+    }
   }
 
   drawThruster() {
@@ -82,19 +94,6 @@ export default class Ship {
     )
     this.ctx.closePath()
     this.ctx.fill()
-    this.ctx.stroke()
-  }
-
-  design(color) {
-    this.ctx.strokeStyle = color
-    this.ctx.beginPath()
-    // ship nose
-    this.ctx.moveTo(
-      this.x + this.r * Math.cos(this.a),
-      this.y - this.r * Math.sin(this.a),
-    )
-    // ship centroid
-    this.ctx.lineTo(this.x, this.y)
     this.ctx.stroke()
   }
 
@@ -125,6 +124,19 @@ export default class Ship {
     this.ctx.fill()
   }
 
+  design(color) {
+    this.ctx.strokeStyle = color
+    this.ctx.beginPath()
+    // ship nose
+    this.ctx.moveTo(
+      this.x + this.r * Math.cos(this.a),
+      this.y - this.r * Math.sin(this.a),
+    )
+    // ship centroid
+    this.ctx.lineTo(this.x, this.y)
+    this.ctx.stroke()
+  }
+
   explode() {
     this.explodeTime = Math.ceil(SHIP_EXPLODE_DURATION * FPS)
     this.isExploding = this.explodeTime > 0
@@ -143,7 +155,47 @@ export default class Ship {
     this.blinkIsOn = this.blinkNumber % 2 === 0
   }
 
+  shoot() {
+    // create laser object
+    if (this.canShoot && this.lasers.length < LASER_MAX) {
+      const laser = {
+        x: this.x + (4/3 * this.r) * Math.cos(this.a),
+        y: this.y - (4/3 * this.r) * Math.sin(this.a),
+        xv: LASER_SPEED * Math.cos(this.a) / FPS,
+        yv: -LASER_SPEED * Math.sin(this.a) / FPS,
+        distance: 0,
+      }
+      this.lasers = [ ...this.lasers, laser]
+    }
+    // shoot once per keypress
+    this.canShoot = false
+  }
+
   update(cvs) {
+    // handle lasers
+    for (const laser of this.lasers) {
+      // check distance travelled
+      if(laser.distance > MAX_TRAVEL_DISTANCE * cvs.width) {
+        // remove the laser
+        this.lasers = this.lasers.filter(l => l.distance !== laser.distance)
+        continue
+      }
+      // move laser
+      laser.x += laser.xv
+      laser.y += laser.yv
+      // calc distance travelled
+      laser.distance += Math.sqrt(Math.pow(laser.xv, 2), Math.pow(laser.yv, 2))
+      // handle screen edges
+      if (laser.x < 0)
+        laser.x = cvs.width
+      else if (laser.x > cvs.width)
+        laser.x = 0
+
+      if (laser.y < 0)
+        laser.y = cvs.height
+      else if (laser.y > cvs.height)
+        laser.y = 0
+    }
     // rotate ship
     this.a += this.rotation
     // move ship

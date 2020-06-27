@@ -5,7 +5,7 @@ import {
   FPS,
   ROID_STARTING_NUM,
   ROID_START_SIZE,
-  SHIP_TURN_SPEED
+  SHIP_TURN_SPEED,
 } from './modules/constants.js'
 import Ship from './modules/Ship.js'
 
@@ -40,7 +40,7 @@ function createAsteriodBelt() {
 }
 
 function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
-  switch (ev.key) {
+  switch (ev.code) {
     case 'ArrowLeft':
       ship.rotation = 0
       break
@@ -50,8 +50,8 @@ function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
     case 'ArrowRight':
       ship.rotation = 0
       break
-    case 'ArrowDown':
-
+    case 'Space':
+      ship.canShoot = true
       break
     default:
       break
@@ -59,7 +59,7 @@ function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
 }
 
 function handleKeyDown(/** @type {KeyboardEvent} */ ev) {
-  switch (ev.key) {
+  switch (ev.code) {
     case 'ArrowLeft':
       ship.rotation = SHIP_TURN_SPEED * DEGREE / FPS
       break
@@ -69,8 +69,8 @@ function handleKeyDown(/** @type {KeyboardEvent} */ ev) {
     case 'ArrowRight':
       ship.rotation = -SHIP_TURN_SPEED * DEGREE / FPS
       break
-    case 'ArrowDown':
-
+    case 'Space':
+      ship.shoot()
       break
     default:
       break
