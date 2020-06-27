@@ -16,6 +16,12 @@ export const SHIP_THRUST = 5
 export const SHIP_TURN_SPEED = 180
 export const SHOW_COLLISION_BOUND = false
 
+export const ROID_SIZES = {
+  sm: Math.ceil(ROID_START_SIZE / 8),
+  md: Math.ceil(ROID_START_SIZE / 4),
+  lg: Math.ceil(ROID_START_SIZE / 2),
+}
+
 export function distanceBetweenPoints(x1, y1, x2, y2) {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
 }

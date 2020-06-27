@@ -2,21 +2,21 @@ import {
   DEGREE,
   distanceBetweenPoints,
   FPS, ROID_JAG,
-  ROID_START_SIZE,
+  ROID_SIZES,
   ROID_START_SPEED,
   ROID_VERTICES,
   SHOW_COLLISION_BOUND,
 } from './constants.js'
 
 export default class Asteroid {
-  constructor(x, y) {
+  constructor(x, y, r = ROID_SIZES.lg) {
     this.x = x
     this.y = y
+    this.r = r
+    this.a = Math.random() * (360 * DEGREE)
     // (x/y) velocity = random magnitude/speed * random direction
     this.xv = (Math.random() * ROID_START_SPEED / FPS) * (Math.random() < 0.5 ? 1 : -1)
     this.yv = (Math.random() * ROID_START_SPEED / FPS) * (Math.random() < 0.5 ? 1 : -1)
-    this.r = ROID_START_SIZE / 2
-    this.a = Math.random() * (360 * DEGREE)
     this.vertices = Math.floor((Math.random() * ROID_VERTICES) + ROID_VERTICES/2)
     this.offsets = []
     // offsets for the vertices

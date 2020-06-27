@@ -3,6 +3,7 @@ import {
   DEGREE,
   distanceBetweenPoints,
   FPS,
+  ROID_SIZES,
   ROID_STARTING_NUM,
   ROID_START_SIZE,
   SHIP_TURN_SPEED,
@@ -37,6 +38,37 @@ function createAsteriodBelt() {
     } while (distanceBetweenPoints(ship.x, ship.y, x, y) < ( ROID_START_SIZE * 2 + ship.r ))
     roids = [ ...roids, new Asteroid(x, y)]
   }
+}
+
+function detectLaserHit() {
+  for (let i = 0; i < roids.length; i++) {
+    distanceBetweenPoints(ship.x, ship.y, roids[i].x, roids[i].y) < ship.r + roids[i].r-10 &&
+      destroyAsteriod(i)
+    for (const laser of ship.lasers) {
+      if (distanceBetweenPoints(roids[i].x, roids[i].y, laser.x, laser.y) < roids[i].r) {
+        ship.lasers = ship.lasers.filter(l => l.distance !== laser.distance)
+        destroyAsteriod(i)
+        break
+      }
+    }
+  }
+}
+
+function destroyAsteriod(idx) {
+  const x = roids[idx].x
+  const y = roids[idx].y
+  const r = roids[idx].r
+  // split asteriod if needed
+  if (r === ROID_SIZES.lg) {
+    roids.push(new Asteroid(x, y, ROID_SIZES.md))
+    roids.push(new Asteroid(x, y, ROID_SIZES.md))
+  }
+  else if (r === ROID_SIZES.md) {
+    roids.push(new Asteroid(x, y, ROID_SIZES.sm))
+    roids.push(new Asteroid(x, y, ROID_SIZES.sm))
+  }
+  // destroy/remove asteriod
+  roids.splice(idx, 1)
 }
 
 function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
@@ -92,6 +124,7 @@ function draw() {
 
 function update() {
   ship.isExploding ? resetShip() : ship.update(cvs)
+  detectLaserHit()
 }
 
 function loop() {
