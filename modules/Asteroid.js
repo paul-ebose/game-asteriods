@@ -2,6 +2,7 @@ import {
   DEGREE,
   distanceBetweenPoints,
   FPS,
+  LASER_EXPLODE_DURATION,
   ROID_JAG,
   ROID_SIZES,
   ROID_START_SIZE,
@@ -60,8 +61,9 @@ export default class Asteroid {
   static detectLaserHit(ship) {
     for (const roid of this.roids)
       for (const laser of ship.lasers)
-        if (distanceBetweenPoints(roid.x, roid.y, laser.x, laser.y) < roid.r) {
-          ship.lasers = ship.lasers.filter(l => l.distance !== laser.distance)
+        if ((laser.explodeTime === 0) && (distanceBetweenPoints(roid.x, roid.y, laser.x, laser.y) < roid.r)) {
+          // destroy roid and start laser explosion
+          laser.explodeTime = Math.ceil(LASER_EXPLODE_DURATION * FPS)
           const idx = this.roids.findIndex(r => r === roid)
           this.destroyAsteriod(idx)
           break

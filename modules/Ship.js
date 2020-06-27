@@ -65,10 +65,27 @@ export default class Ship {
     }
     // draw lasers is any
     for (const laser of this.lasers) {
-      this.ctx.fillStyle = 'salmon'
-      this.ctx.beginPath()
-      this.ctx.arc(laser.x, laser.y, this.size/15, 0, 360 * DEGREE)
-      this.ctx.fill()
+      if (laser.explodeTime === 0) {
+        this.ctx.fillStyle = 'salmon'
+        this.ctx.beginPath()
+        this.ctx.arc(laser.x, laser.y, this.size/15, 0, 360 * DEGREE)
+        this.ctx.fill()
+      } else {
+        this.ctx.fillStyle = 'orangered'
+        this.ctx.beginPath()
+        this.ctx.arc(laser.x, laser.y, this.r * 0.75, 0, 360 * DEGREE)
+        this.ctx.fill()
+        //
+        this.ctx.fillStyle = 'coral'
+        this.ctx.beginPath()
+        this.ctx.arc(laser.x, laser.y, this.r * 0.5, 0, 360 * DEGREE)
+        this.ctx.fill()
+        //
+        this.ctx.fillStyle = 'pink'
+        this.ctx.beginPath()
+        this.ctx.arc(laser.x, laser.y, this.r * 0.25, 0, 360 * DEGREE)
+        this.ctx.fill()
+      }
     }
   }
 
@@ -164,6 +181,7 @@ export default class Ship {
         xv: LASER_SPEED * Math.cos(this.a) / FPS,
         yv: -LASER_SPEED * Math.sin(this.a) / FPS,
         distance: 0,
+        explodeTime: 0,
       }
       this.lasers = [ ...this.lasers, laser]
     }
@@ -180,11 +198,21 @@ export default class Ship {
         this.lasers = this.lasers.filter(l => l.distance !== laser.distance)
         continue
       }
-      // move laser
-      laser.x += laser.xv
-      laser.y += laser.yv
-      // calc distance travelled
-      laser.distance += Math.sqrt(Math.pow(laser.xv, 2), Math.pow(laser.yv, 2))
+      // handle laser explosion
+      if (laser.explodeTime > 0) {
+        laser.explodeTime--
+        if (laser.explodeTime === 0) {
+          const idx = this.lasers.findIndex(l => l === laser)
+          this.lasers.splice(idx, 1)
+          continue
+        }
+      } else {
+        // move laser
+        laser.x += laser.xv
+        laser.y += laser.yv
+        // calc distance travelled
+        laser.distance += Math.sqrt(Math.pow(laser.xv, 2), Math.pow(laser.yv, 2))
+      }
       // handle screen edges
       if (laser.x < 0)
         laser.x = cvs.width

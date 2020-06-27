@@ -2,6 +2,7 @@ export const DEGREE = Math.PI/180
 export const FRICTION = 0.7
 export const FPS = 30
 export const MAX_TRAVEL_DISTANCE = 0.7
+export const LASER_EXPLODE_DURATION = 0.1
 export const LASER_MAX = 10
 export const LASER_SPEED = 500
 export const ROID_JAG = 0.44
