@@ -1,4 +1,12 @@
-import { DEGREE, FPS, ROID_JAG, ROID_START_SIZE, ROID_START_SPEED, ROID_VERTEX } from './constants.js'
+import {
+  DEGREE,
+  distanceBetweenPoints,
+  FPS, ROID_JAG,
+  ROID_START_SIZE,
+  ROID_START_SPEED,
+  ROID_VERTICES,
+  SHOW_COLLISION_BOUND
+} from './constants.js'
 
 export default class Asteroid {
   constructor(x, y) {
@@ -9,39 +17,45 @@ export default class Asteroid {
     this.yv = (Math.random() * ROID_START_SPEED / FPS) * (Math.random() < 0.5 ? 1 : -1)
     this.r = ROID_START_SIZE / 2
     this.a = Math.random() * (360 * DEGREE)
-    this.vertices = Math.floor((Math.random() * ROID_VERTEX) + ROID_VERTEX/2)
+    this.vertices = Math.floor((Math.random() * ROID_VERTICES) + ROID_VERTICES/2)
     this.offsets = []
     // offsets for the vertices
     for (let i = 0; i < this.vertices; i++)
       this.offsets = [ ...this.offsets, Math.random() * ROID_JAG + 1 - ROID_JAG]
   }
 
-  static render(ctx, cvs, lineWidth, roids) {
-    ctx.strokeStyle = 'slategrey'
-    ctx.lineWidth = lineWidth
-
-    let x, y, r, a, vertices, offsets
+  static render(ctx, cvs, ship, roids) {
+    let vertices, offsets
     for (const roid of roids) {
-      x = roid.x
-      y = roid.y
-      r = roid.r
-      a = roid.a
+      ctx.strokeStyle = 'slategrey'
+      ctx.lineWidth = ship.size/20
       vertices = roid.vertices
       offsets = roid.offsets
       // draw path
       ctx.beginPath()
       ctx.moveTo(
-        x + r * offsets[0] * Math.cos(a),
-        y + r * offsets[0] * Math.sin(a),
+        roid.x + roid.r * offsets[0] * Math.cos(roid.a),
+        roid.y + roid.r * offsets[0] * Math.sin(roid.a),
       )
       // draw polygon
       for (let i = 1; i < vertices; i++)
         ctx.lineTo(
-          x + r * offsets[i] * Math.cos(a + i * (360 * DEGREE ) / vertices),
-          y + r * offsets[i] * Math.sin(a + i * (360 * DEGREE ) / vertices),
+          roid.x + roid.r * offsets[i] * Math.cos(roid.a + i * (360 * DEGREE ) / vertices),
+          roid.y + roid.r * offsets[i] * Math.sin(roid.a + i * (360 * DEGREE ) / vertices),
         )
       ctx.closePath()
       ctx.stroke()
+      // show boundary
+      if (SHOW_COLLISION_BOUND) {
+        ctx.strokeStyle = 'lime'
+        ctx.beginPath()
+        ctx.arc(roid.x, roid.y, roid.r-10, 0, 360 * DEGREE)
+        ctx.stroke()
+      }
+      // detect collisions [if,if,then]
+      ship.blinkNumber === 0 &&
+        distanceBetweenPoints(ship.x, ship.y, roid.x, roid.y) < ship.r + roid.r-10 &&
+        ship.explode()
       // move asteroid
       roid.x += roid.xv
       roid.y += roid.yv

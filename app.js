@@ -1,8 +1,15 @@
-import { DEGREE, FPS, TURN_SPEED, ROID_STARTING_NUM, ROID_START_SIZE } from './modules/constants.js'
-import Ship from './modules/Ship.js'
 import Asteroid from './modules/Asteroid.js'
+import {
+  DEGREE,
+  distanceBetweenPoints,
+  FPS,
+  ROID_STARTING_NUM,
+  ROID_START_SIZE,
+  SHIP_TURN_SPEED
+} from './modules/constants.js'
+import Ship from './modules/Ship.js'
 
-/**@type {HTMLCanvasElement} */
+/** @type {HTMLCanvasElement} */
 const cvs = document.getElementById('gameCanvas')
 const ctx = cvs.getContext('2d')
 
@@ -10,9 +17,15 @@ document.addEventListener('keyup', handleKeyUp)
 document.addEventListener('keydown', handleKeyDown)
 
 // set ship & asteroids
-const ship = new Ship( cvs.width/2, cvs.height/2, 30)
+let ship = new Ship(cvs.width/2, cvs.height/2, ctx)
 let roids = []
 createAsteriodBelt()
+
+function resetShip() {
+  ship.explodeTime--
+  ship.explodeTime === 0 && (
+    ship = new Ship(cvs.width/2, cvs.height/2, ctx))
+}
 
 function createAsteriodBelt() {
   roids = []
@@ -26,11 +39,7 @@ function createAsteriodBelt() {
   }
 }
 
-function distanceBetweenPoints(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
-}
-
-function handleKeyUp(/**@type {KeyboardEvent} */ ev) {
+function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
   switch (ev.key) {
     case 'ArrowLeft':
       ship.rotation = 0
@@ -49,16 +58,16 @@ function handleKeyUp(/**@type {KeyboardEvent} */ ev) {
   }
 }
 
-function handleKeyDown(/**@type {KeyboardEvent} */ ev) {
+function handleKeyDown(/** @type {KeyboardEvent} */ ev) {
   switch (ev.key) {
     case 'ArrowLeft':
-      ship.rotation = TURN_SPEED * DEGREE / FPS
+      ship.rotation = SHIP_TURN_SPEED * DEGREE / FPS
       break
     case 'ArrowUp':
       ship.isThrusting = true
       break
     case 'ArrowRight':
-      ship.rotation = -TURN_SPEED * DEGREE / FPS
+      ship.rotation = -SHIP_TURN_SPEED * DEGREE / FPS
       break
     case 'ArrowDown':
 
@@ -72,13 +81,17 @@ function handleKeyDown(/**@type {KeyboardEvent} */ ev) {
 function draw() {
   ctx.fillStyle = '#00090c'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
-  ship.draw(ctx)
-  Asteroid.render(ctx, cvs, ship.size/20, roids)
-  ship.isThrusting ? ship.drawThruster(ctx) : ship.design(ctx)
+  Asteroid.render(ctx, cvs, ship, roids)
+  ship.isExploding && ship.drawExplosion()
+  if (!ship.isExploding) {
+    ship.handleBlinking()
+    ship.blinkIsOn && ship.draw()
+    ship.blinkIsOn && ship.isThrusting ? ship.drawThruster() : ship.design('#16169e')
+  }
 }
 
 function update() {
-  ship.update(cvs)
+  ship.isExploding ? resetShip() : ship.update(cvs)
 }
 
 function loop() {
