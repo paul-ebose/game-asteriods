@@ -17,6 +17,7 @@ import {
   score,
   SHOW_COLLISION_BOUND,
 } from './constants.js'
+import { hitFX } from './Sound.js'
 
 let roids = []
 
@@ -71,10 +72,9 @@ export default class Asteroid {
     window.localStorage.setItem(SAVE_KEY_SCORE, highScore.value)
     // destroy/remove asteriod
     roids.splice(idx, 1)
+    hitFX.play()
     // goto new level
-    if (roids.length === 0) {
-      this.gotoNextLevel = true
-    }
+    roids.length === 0 && (this.gotoNextLevel = true)
   }
 
   static detectLaserHit(ship, lvl) {

@@ -4,6 +4,7 @@ export const FPS = 30
 export const FRICTION = 0.7
 export const GAME_LIVES = 5
 export const MAX_TRAVEL_DISTANCE = 0.7
+export const MUSIC_ON = true
 export const LASER_EXPLODE_DURATION = 0.1
 export const LASER_MAX = 10
 export const LASER_SPEED = 500
@@ -22,6 +23,7 @@ export const SHIP_INVISIBILTY_DURATION = 7
 export const SHIP_THRUST = 5
 export const SHIP_TURN_SPEED = 180
 export const SHOW_COLLISION_BOUND = false
+export const SOUND_ON = true
 export const TEXT_FADE_TIME = 2.6
 
 export const score = { value: 0 }
@@ -31,6 +33,7 @@ export const ROID_SIZES = {
   sm: Math.ceil(ROID_START_SIZE / 8),
   md: Math.ceil(ROID_START_SIZE / 4),
   lg: Math.ceil(ROID_START_SIZE / 2),
+  maxNum: 7, // 1lg -> 2md -> 4sm
 }
 
 export function distanceBetweenPoints(x1, y1, x2, y2) {

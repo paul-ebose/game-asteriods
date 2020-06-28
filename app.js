@@ -5,6 +5,7 @@ import {
   FPS,
   GAME_LIVES,
   highScore,
+  MUSIC_ON,
   SAVE_KEY_SCORE,
   score,
   SHIP_TURN_SPEED,
@@ -20,6 +21,9 @@ document.addEventListener('keyup', handleKeyUp)
 document.addEventListener('keydown', handleKeyDown)
 
 let level, lives, ship, text, textAlpha
+const music = new Audio('./audio/big-bad-wolf.mp3')
+music.loop = true
+music.volume = 0.3
 newGame()
 
 function newGame() {
@@ -94,6 +98,7 @@ function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
 }
 
 function handleKeyDown(/** @type {KeyboardEvent} */ ev) {
+  MUSIC_ON && music.play()
   if (ship.dead) return
   switch (ev.code) {
     case 'ArrowLeft':
@@ -123,7 +128,7 @@ function draw() {
     if (!ship.isExploding) {
       ship.handleBlinking()
       ship.blinkIsOn && ship.draw()
-      ship.blinkIsOn && ship.isThrusting ? ship.drawThruster() : ship.design('#16169e')
+      ship.blinkIsOn && ship.isThrusting ? ship.drawThruster() : ship.drawDesign('#16169e')
     }
   }
   // draw lives
@@ -140,11 +145,10 @@ function draw() {
 function update() {
   ship.isExploding ? resetShip() : ship.update(cvs)
   Asteroid.detectLaserHit(ship, level)
-  if (Asteroid.gotoNextLevel) {
-    level++
-    newLevel()
-    Asteroid.gotoNextLevel = false
-  }
+  if (!Asteroid.gotoNextLevel) return
+  level++
+  newLevel()
+  Asteroid.gotoNextLevel = false
 }
 
 function loop() {

@@ -10,6 +10,7 @@ import {
   SHIP_INVISIBILTY_DURATION,
   SHOW_COLLISION_BOUND,
 } from './constants.js'
+import { laserFX, explodeFX, thrustFX } from './Sound.js'
 
 export default class Ship {
   constructor(x, y, context, size = 30) {
@@ -31,19 +32,6 @@ export default class Ship {
       x: 0,
       y: 0,
     }
-  }
-
-  design(color) {
-    this.ctx.strokeStyle = color
-    this.ctx.beginPath()
-    // ship nose
-    this.ctx.moveTo(
-      this.x + this.r * Math.cos(this.a),
-      this.y - this.r * Math.sin(this.a),
-    )
-    // ship centroid
-    this.ctx.lineTo(this.x, this.y)
-    this.ctx.stroke()
   }
 
   draw() {
@@ -83,6 +71,20 @@ export default class Ship {
         this.ctx.fill()
       }
     }
+  }
+
+  drawDesign(color) {
+    this.ctx.strokeStyle = color
+    this.ctx.beginPath()
+    // ship nose
+    this.ctx.moveTo(
+      this.x + this.r * Math.cos(this.a),
+      this.y - this.r * Math.sin(this.a),
+    )
+    // ship centroid
+    this.ctx.lineTo(this.x, this.y)
+    this.ctx.stroke()
+    thrustFX.stop()
   }
 
   drawExplosion() {
@@ -158,11 +160,13 @@ export default class Ship {
     this.ctx.closePath()
     this.ctx.fill()
     this.ctx.stroke()
+    thrustFX.play()
   }
 
   explode() {
     this.explodeTime = Math.ceil(SHIP_EXPLODE_DURATION * FPS)
     this.isExploding = this.explodeTime > 0
+    explodeFX.play()
   }
 
   handleBlinking() {
@@ -190,6 +194,7 @@ export default class Ship {
         explodeTime: 0,
       }
       this.lasers = [ ...this.lasers, laser]
+      laserFX.play()
     }
     // shoot once per keypress
     this.canShoot = false
