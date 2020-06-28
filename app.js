@@ -33,6 +33,8 @@ function drawText() {
     ctx.font = `small-caps ${FONT_SIZE}px Consolas`
     ctx.fillText(text, cvs.width / 2, cvs.height * 0.75)
     textAlpha -= (1 / TEXT_FADE_TIME / FPS)
+  } else if (ship.dead) {
+    newGame()
   }
 }
 
@@ -40,11 +42,18 @@ function resetShip() {
   ship.explodeTime--
   if (ship.explodeTime === 0) {
     lives--
-    lives === 0 ? null : (ship = new Ship(cvs.width/2, cvs.height/2, ctx))
+    lives === 0 ? gameOver() : (ship = new Ship(cvs.width/2, cvs.height/2, ctx))
   }
 }
 
+function gameOver() {
+  ship.dead = true
+  text = 'Game Over'
+  textAlpha = 1
+}
+
 function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
+  if (ship.dead) return
   switch (ev.code) {
     case 'ArrowLeft':
       ship.rotation = 0
@@ -64,6 +73,7 @@ function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
 }
 
 function handleKeyDown(/** @type {KeyboardEvent} */ ev) {
+  if (ship.dead) return
   switch (ev.code) {
     case 'ArrowLeft':
       ship.rotation = SHIP_TURN_SPEED * DEGREE / FPS
@@ -87,11 +97,13 @@ function draw() {
   ctx.fillStyle = '#00090c'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
   Asteroid.render(ctx, cvs, ship, level)
-  ship.isExploding && ship.drawExplosion()
-  if (!ship.isExploding) {
-    ship.handleBlinking()
-    ship.blinkIsOn && ship.draw()
-    ship.blinkIsOn && ship.isThrusting ? ship.drawThruster() : ship.design('#16169e')
+  if (!ship.dead) {
+    ship.isExploding && ship.drawExplosion()
+    if (!ship.isExploding) {
+      ship.handleBlinking()
+      ship.blinkIsOn && ship.draw()
+      ship.blinkIsOn && ship.isThrusting ? ship.drawThruster() : ship.design('#16169e')
+    }
   }
   for (let i = 0; i < lives; i++) {
     const lifeColor = ship.isExploding && (i === lives - 1) ? 'red' : 'white'

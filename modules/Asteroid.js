@@ -106,11 +106,12 @@ export default class Asteroid {
         ctx.stroke()
       }
       // detect collisions
-      if ((ship.blinkNumber === 0) && (distanceBetweenPoints(ship.x, ship.y, roid.x, roid.y) < ship.r + roid.r-10)) {
-        ship.explode()
-        const idx = roids.findIndex(r => r === roid)
-        this.destroyAsteriod(idx, lvl)
-        break
+      if ((ship.blinkNumber === 0) && !ship.dead && (
+        distanceBetweenPoints(ship.x, ship.y, roid.x, roid.y) < ship.r + roid.r-10)) {
+          ship.explode()
+          const idx = roids.findIndex(r => r === roid)
+          this.destroyAsteriod(idx, lvl)
+          break
       }
       // move asteroid
       roid.x += roid.xv

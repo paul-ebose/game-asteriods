@@ -20,6 +20,7 @@ export default class Ship {
     this.r = size/2
     this.a = 90 * DEGREE
     this.rotation = 0
+    this.dead = false
     this.canShoot = true
     this.lasers = []
     this.blinkNumber= Math.ceil(SHIP_INVISIBILTY_DURATION / SHIP_BLINK_DURATION)
