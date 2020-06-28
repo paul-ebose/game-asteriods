@@ -1,5 +1,5 @@
 import Asteroid from './modules/Asteroid.js'
-import { DEGREE, FPS, SHIP_TURN_SPEED , TEXT_FADE_TIME, FONT_SIZE} from './modules/constants.js'
+import { DEGREE, FONT_SIZE, FPS, GAME_LIVES, SHIP_TURN_SPEED, TEXT_FADE_TIME } from './modules/constants.js'
 import Ship from './modules/Ship.js'
 
 /** @type {HTMLCanvasElement} */
@@ -9,11 +9,12 @@ const ctx = cvs.getContext('2d')
 document.addEventListener('keyup', handleKeyUp)
 document.addEventListener('keydown', handleKeyDown)
 
-let level, ship, text, textAlpha
+let level, lives, ship, text, textAlpha
 newGame()
 
 function newGame() {
   level = 0
+  lives = GAME_LIVES
   ship = new Ship(cvs.width/2, cvs.height/2, ctx)
   newLevel()
 }
@@ -37,8 +38,10 @@ function drawText() {
 
 function resetShip() {
   ship.explodeTime--
-  (ship.explodeTime === 0) && (
-    ship = new Ship(cvs.width/2, cvs.height/2, ctx))
+  if (ship.explodeTime === 0) {
+    lives--
+    lives === 0 ? null : (ship = new Ship(cvs.width/2, cvs.height/2, ctx))
+  }
 }
 
 function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
@@ -89,6 +92,11 @@ function draw() {
     ship.handleBlinking()
     ship.blinkIsOn && ship.draw()
     ship.blinkIsOn && ship.isThrusting ? ship.drawThruster() : ship.design('#16169e')
+  }
+  for (let i = 0; i < lives; i++) {
+    const lifeColor = ship.isExploding && (i === lives - 1) ? 'red' : 'white'
+    // ship.size + (prev ship space * margin space)
+    ship.drawShip(ship.size + (i * ship.size * 1.2), ship.size, 90 * DEGREE, lifeColor)
   }
   drawText()
 }

@@ -2,6 +2,7 @@ export const DEGREE = Math.PI/180
 export const FONT_SIZE = 40
 export const FPS = 30
 export const FRICTION = 0.7
+export const GAME_LIVES = 5
 export const MAX_TRAVEL_DISTANCE = 0.7
 export const LASER_EXPLODE_DURATION = 0.1
 export const LASER_MAX = 10

@@ -32,27 +32,22 @@ export default class Ship {
     }
   }
 
-  draw() {
-    this.ctx.strokeStyle = 'white'
-    this.ctx.lineWidth = this.size/20
+  design(color) {
+    this.ctx.strokeStyle = color
     this.ctx.beginPath()
     // ship nose
     this.ctx.moveTo(
-      this.x + (4/3 * this.r) * Math.cos(this.a),
-      this.y - (4/3 * this.r) * Math.sin(this.a),
+      this.x + this.r * Math.cos(this.a),
+      this.y - this.r * Math.sin(this.a),
     )
-    // ship rear left
-    this.ctx.lineTo(
-      this.x - this.r * (2/3 * Math.cos(this.a) + Math.sin(this.a)),
-      this.y + this.r * (2/3 * Math.sin(this.a) - Math.cos(this.a)),
-    )
-    // ship rear right
-    this.ctx.lineTo(
-      this.x - this.r * (2/3 * Math.cos(this.a) - Math.sin(this.a)),
-      this.y + this.r * (2/3 * Math.sin(this.a) + Math.cos(this.a)),
-    )
-    this.ctx.closePath()
+    // ship centroid
+    this.ctx.lineTo(this.x, this.y)
     this.ctx.stroke()
+  }
+
+  draw() {
+    // draw ship
+    this.drawShip(this.x, this.y, this.a)
     // center dot, centroid
     this.ctx.fillStyle = '#16169e'
     this.ctx.fillRect(this.x-2, this.y-2, 4, 4)
@@ -89,31 +84,6 @@ export default class Ship {
     }
   }
 
-  drawThruster() {
-    this.ctx.fillStyle = 'red'
-    this.ctx.strokeStyle = 'yellow'
-    this.ctx.lineWidth = this.size/12
-    this.ctx.beginPath()
-    // ship left rear
-    this.ctx.moveTo(
-      this.x - this.r * (2/3 * Math.cos(this.a) + 0.5 * Math.sin(this.a)),
-      this.y + this.r * (2/3 * Math.sin(this.a) - 0.5 * Math.cos(this.a)),
-    )
-    // ship rear centre
-    this.ctx.lineTo(
-      this.x - this.r * Math.cos(this.a),
-      this.y + this.r * Math.sin(this.a),
-    )
-    // ship rear right
-    this.ctx.lineTo(
-      this.x - this.r * (2/3 * Math.cos(this.a) - 0.5 * Math.sin(this.a)),
-      this.y + this.r * (2/3 * Math.sin(this.a) + 0.5 * Math.cos(this.a)),
-    )
-    this.ctx.closePath()
-    this.ctx.fill()
-    this.ctx.stroke()
-  }
-
   drawExplosion() {
     this.ctx.fillStyle = 'darkred'
     this.ctx.beginPath()
@@ -141,16 +111,51 @@ export default class Ship {
     this.ctx.fill()
   }
 
-  design(color) {
-    this.ctx.strokeStyle = color
+  drawShip(x, y, a, c = 'white') {
+    this.ctx.strokeStyle = c
+    this.ctx.lineWidth = this.size/20
     this.ctx.beginPath()
     // ship nose
     this.ctx.moveTo(
-      this.x + this.r * Math.cos(this.a),
-      this.y - this.r * Math.sin(this.a),
+      x + (4/3 * this.r) * Math.cos(a),
+      y - (4/3 * this.r) * Math.sin(a),
     )
-    // ship centroid
-    this.ctx.lineTo(this.x, this.y)
+    // ship rear left
+    this.ctx.lineTo(
+      x - this.r * (2/3 * Math.cos(a) + Math.sin(a)),
+      y + this.r * (2/3 * Math.sin(a) - Math.cos(a)),
+    )
+    // ship rear right
+    this.ctx.lineTo(
+      x - this.r * (2/3 * Math.cos(a) - Math.sin(a)),
+      y + this.r * (2/3 * Math.sin(a) + Math.cos(a)),
+    )
+    this.ctx.closePath()
+    this.ctx.stroke()
+  }
+
+  drawThruster() {
+    this.ctx.fillStyle = 'red'
+    this.ctx.strokeStyle = 'yellow'
+    this.ctx.lineWidth = this.size/12
+    this.ctx.beginPath()
+    // ship left rear
+    this.ctx.moveTo(
+      this.x - this.r * (2/3 * Math.cos(this.a) + 0.5 * Math.sin(this.a)),
+      this.y + this.r * (2/3 * Math.sin(this.a) - 0.5 * Math.cos(this.a)),
+    )
+    // ship rear centre
+    this.ctx.lineTo(
+      this.x - this.r * Math.cos(this.a),
+      this.y + this.r * Math.sin(this.a),
+    )
+    // ship rear right
+    this.ctx.lineTo(
+      this.x - this.r * (2/3 * Math.cos(this.a) - 0.5 * Math.sin(this.a)),
+      this.y + this.r * (2/3 * Math.sin(this.a) + 0.5 * Math.cos(this.a)),
+    )
+    this.ctx.closePath()
+    this.ctx.fill()
     this.ctx.stroke()
   }
 
