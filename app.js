@@ -34,11 +34,11 @@ function newGame() {
 
 function newLevel() {
   text = `Level ${level + 1}`
-  textAlpha = 1
+  textAlpha = 1.0
   Asteroid.createAsteriodBelt(cvs, ship, level)
 }
 
-function drawScore(value, align, position, fontRatio = 1) {
+function drawScore(value, align, position, fontRatio = 1.0) {
   ctx.textAlign = align
   ctx.textBaseline = 'middle'
   ctx.fillStyle = 'white'
@@ -53,7 +53,7 @@ function drawText() {
     ctx.fillStyle = `rgba(255, 255, 255, ${textAlpha})`
     ctx.font = `small-caps ${FONT_SIZE}px Consolas`
     ctx.fillText(text, cvs.width / 2, cvs.height * 0.75)
-    textAlpha -= (1 / TEXT_FADE_TIME / FPS)
+    textAlpha -= (1.0 / TEXT_FADE_TIME / FPS)
   } else if (ship.dead) {
     newGame()
   }
@@ -70,7 +70,7 @@ function resetShip() {
 function gameOver() {
   ship.dead = true
   text = 'Game Over'
-  textAlpha = 1
+  textAlpha = 1.0
 }
 
 function handleKeyUp(/** @type {KeyboardEvent} */ ev) {
