@@ -1,6 +1,7 @@
 export const DEGREE = Math.PI/180
-export const FRICTION = 0.7
+export const FONT_SIZE = 40
 export const FPS = 30
+export const FRICTION = 0.7
 export const MAX_TRAVEL_DISTANCE = 0.7
 export const LASER_EXPLODE_DURATION = 0.1
 export const LASER_MAX = 10
@@ -8,7 +9,7 @@ export const LASER_SPEED = 500
 export const ROID_JAG = 0.44
 export const ROID_START_SIZE = 100
 export const ROID_START_SPEED = 50
-export const ROID_STARTING_NUM = 4
+export const ROID_STARTING_NUM = 1
 export const ROID_VERTICES = 10
 export const SHIP_BLINK_DURATION = 0.2
 export const SHIP_EXPLODE_DURATION = 0.44
@@ -16,6 +17,7 @@ export const SHIP_INVISIBILTY_DURATION = 7
 export const SHIP_THRUST = 5
 export const SHIP_TURN_SPEED = 180
 export const SHOW_COLLISION_BOUND = false
+export const TEXT_FADE_TIME = 2.6
 
 export const ROID_SIZES = {
   sm: Math.ceil(ROID_START_SIZE / 8),
