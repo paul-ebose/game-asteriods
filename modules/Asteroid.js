@@ -2,13 +2,19 @@ import {
   DEGREE,
   distanceBetweenPoints,
   FPS,
+  highScore,
   LASER_EXPLODE_DURATION,
   ROID_JAG,
+  ROID_POINTS_LG,
+  ROID_POINTS_MD,
+  ROID_POINTS_SM,
   ROID_SIZES,
   ROID_START_SIZE,
   ROID_START_SPEED,
   ROID_STARTING_NUM,
   ROID_VERTICES,
+  SAVE_KEY_SCORE,
+  score,
   SHOW_COLLISION_BOUND,
 } from './constants.js'
 
@@ -53,11 +59,16 @@ export default class Asteroid {
     if (r === ROID_SIZES.lg) {
       roids.push(new Asteroid(x, y, lvl, ROID_SIZES.md))
       roids.push(new Asteroid(x, y, lvl, ROID_SIZES.md))
+      score.value += ROID_POINTS_LG
     }
     else if (r === ROID_SIZES.md) {
       roids.push(new Asteroid(x, y, lvl, ROID_SIZES.sm))
       roids.push(new Asteroid(x, y, lvl, ROID_SIZES.sm))
-    }
+      score.value += ROID_POINTS_MD
+    } else score.value += ROID_POINTS_SM
+    // check highscore
+    highScore.value = Math.max(score.value, highScore.value)
+    window.localStorage.setItem(SAVE_KEY_SCORE, highScore.value)
     // destroy/remove asteriod
     roids.splice(idx, 1)
     // goto new level
